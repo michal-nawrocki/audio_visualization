@@ -1,8 +1,14 @@
+import numpy
 import pyaudio
+import time
+import matplotlib.pyplot as plt
 
-
-def main():
-    pass
+""" Globals for constant specs """
+FORMAT = pyaudio.paInt16
+CHANNELS = 2
+RATE = 44100
+CHUNK = 1024
+WAVE_OUTPUT_FILENAME = "output.wav"
 
 
 def get_all_devises():
@@ -17,7 +23,7 @@ def get_all_devises():
         if p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
             print("Output Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name'))
 
-    devinfo = p.get_device_info_by_index(1)
+    devinfo = p.get_device_info_by_index(2)
     print("Selected device is ", devinfo.get('name'))
     if p.is_format_supported(
             44100.0,  # Sample rate
@@ -29,6 +35,43 @@ def get_all_devises():
     p.terminate()
 
 
+def get_miks_stereo_device_index():
+    p = pyaudio.PyAudio()
+    info = p.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
+        device_name = p.get_device_info_by_host_api_device_index(0, i).get('name')
+
+        if "Miks stere" in device_name:
+            print(f"Miks stereo device id is: {i}")
+            return i
+
+
+def read_from_device(device_index):
+    p = pyaudio.PyAudio()
+    stream = p.open(
+        format=FORMAT,
+        channels=CHANNELS,
+        rate=RATE,
+        input=True,
+        input_device_index=device_index,
+        frames_per_buffer=CHUNK
+    )
+
+    while True:
+        # Get raw bytes
+        bit = stream.read(CHUNK)
+
+        # Decode
+        decoded = numpy.fromstring(bit, 'Int16')
+
+        print(decoded)
+        time.sleep(1)
+        plt.plot(decoded)
+        plt.show()
+
+
 if __name__ == "__main__":
-    get_all_devises()
-    main()
+    #get_all_devises()
+    miks_stereo_index = get_miks_stereo_device_index()
+    read_from_device(device_index=miks_stereo_index)
