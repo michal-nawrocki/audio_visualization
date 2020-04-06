@@ -3,7 +3,7 @@ import pyaudio
 import time
 import matplotlib.pyplot as plt
 
-""" Globals for constant specs """
+""" Globals for params """
 FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
