@@ -8,7 +8,6 @@ FORMAT = pyaudio.paInt16
 CHANNELS = 2
 RATE = 44100
 CHUNK = 1024
-WAVE_OUTPUT_FILENAME = "output.wav"
 
 
 def get_all_devises():
@@ -72,6 +71,6 @@ def read_from_device(device_index):
 
 
 if __name__ == "__main__":
-    #get_all_devises()
+    # get_all_devises()
     miks_stereo_index = get_miks_stereo_device_index()
     read_from_device(device_index=miks_stereo_index)
