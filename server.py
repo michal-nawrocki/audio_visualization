@@ -27,7 +27,7 @@ def run_server():
             try:
                 while True:
                     data = connection.recv(1024)  # Receive 1024 bytes
-                    print(data)
+                    #print(data)
                     # TODO: Do visualization with the data
 
                     if not data:
